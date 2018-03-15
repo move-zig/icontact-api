@@ -10,10 +10,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-const HTTPStatus = __importStar(require("http-status"));
-const request_1 = __importDefault(require("request"));
-class IContactAPI {
-    constructor(appId, apiUsername, apiPassword) {
+var HTTPStatus = __importStar(require("http-status"));
+var request_1 = __importDefault(require("request"));
+var IContactAPI = /** @class */ (function () {
+    function IContactAPI(appId, apiUsername, apiPassword) {
         this.host = 'https://api.icpro.co';
         this.timeout = 5000;
         this.accountId = null;
@@ -22,41 +22,44 @@ class IContactAPI {
         this.apiUsername = apiUsername;
         this.apiPassword = apiPassword;
     }
-    setTimeout(timeout) { this.timeout = timeout; }
-    getTimeout() { return this.timeout; }
-    setAccountId(accountId) { this.accountId = accountId; }
-    getAccountId() { return this.accountId; }
-    setClientFolderId(clientFolderId) { this.clientFolderId = clientFolderId; }
-    getClientFolderId() { return this.clientFolderId; }
-    getContacts(searchParameters) {
-        return new Promise((resolve, reject) => {
+    IContactAPI.prototype.setTimeout = function (timeout) { this.timeout = timeout; };
+    IContactAPI.prototype.getTimeout = function () { return this.timeout; };
+    IContactAPI.prototype.setAccountId = function (accountId) { this.accountId = accountId; };
+    IContactAPI.prototype.getAccountId = function () { return this.accountId; };
+    IContactAPI.prototype.setClientFolderId = function (clientFolderId) { this.clientFolderId = clientFolderId; };
+    IContactAPI.prototype.getClientFolderId = function () { return this.clientFolderId; };
+    IContactAPI.prototype.getContacts = function (searchParameters) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
             try {
-                const uri = `${this.getBaseURI()}/contacts`;
-                const options = {
-                    headers: this.getHeaders(),
+                var uri = _this.getBaseURI() + "/contacts";
+                var options = {
+                    headers: _this.getHeaders(),
                     json: true,
                     method: 'GET',
                     qs: searchParameters,
-                    timeout: this.timeout,
+                    timeout: _this.timeout,
                 };
-                request_1.default(uri, options, (err, response, body) => {
+                request_1.default(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
                     }
                     if (response.statusCode !== HTTPStatus.OK) {
-                        reject(new Error(`Got status code ${response.statusCode} (expecting 200)\n\n${JSON.stringify(body)}`));
+                        reject(new Error("Got status code " + response.statusCode + " (expecting 200)\n\n" + JSON.stringify(body)));
                         return;
                     }
                     if (typeof body.contacts !== 'undefined' && Array.isArray(body.contacts)) {
-                        for (const c of body.contacts) {
+                        for (var _i = 0, _a = body.contacts; _i < _a.length; _i++) {
+                            var c = _a[_i];
                             if (typeof c.contactId === 'string') {
                                 c.contactId = parseInt(c.contactId, 10);
                             }
                         }
                     }
                     if (typeof body.contacts !== 'undefined' && Array.isArray(body.contacts)) {
-                        for (const c of body.contacts) {
+                        for (var _b = 0, _c = body.contacts; _b < _c.length; _b++) {
+                            var c = _c[_b];
                             if (typeof c.contactId === 'string') {
                                 c.contactId = parseInt(c.contactId, 10);
                             }
@@ -69,11 +72,13 @@ class IContactAPI {
                 reject(err);
             }
         });
-    }
+    };
     /** adds new contacts--remember to subscribe them to a list */
-    addContacts(contacts) {
-        return new Promise((resolve, reject) => {
-            for (const contact of contacts) {
+    IContactAPI.prototype.addContacts = function (contacts) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            for (var _i = 0, contacts_1 = contacts; _i < contacts_1.length; _i++) {
+                var contact = contacts_1[_i];
                 if (typeof contact.contactId !== 'undefined') {
                     reject(new Error('`contactId` cannot be included in creation requests'));
                     return;
@@ -84,25 +89,26 @@ class IContactAPI {
                 }
             }
             try {
-                const uri = `${this.getBaseURI()}/contacts`;
-                const options = {
+                var uri = _this.getBaseURI() + "/contacts";
+                var options = {
                     body: contacts,
-                    headers: this.getHeaders(),
+                    headers: _this.getHeaders(),
                     json: true,
                     method: 'POST',
-                    timeout: this.timeout,
+                    timeout: _this.timeout,
                 };
-                request_1.default(uri, options, (err, response, body) => {
+                request_1.default(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
                     }
                     if (response.statusCode !== HTTPStatus.OK) {
-                        reject(new Error(`Got status code ${response.statusCode} (expecting 200)\n\n${JSON.stringify(body)}`));
+                        reject(new Error("Got status code " + response.statusCode + " (expecting 200)\n\n" + JSON.stringify(body)));
                         return;
                     }
                     if (typeof body.contacts !== 'undefined' && Array.isArray(body.contacts)) {
-                        for (const c of body.contacts) {
+                        for (var _i = 0, _a = body.contacts; _i < _a.length; _i++) {
+                            var c = _a[_i];
                             if (typeof c.contactId === 'string') {
                                 c.contactId = parseInt(c.contactId, 10);
                             }
@@ -115,26 +121,27 @@ class IContactAPI {
                 reject(err);
             }
         });
-    }
+    };
     /** updates a contact, replacing only the fields supplied */
-    updateContact(id, contact) {
-        return new Promise((resolve, reject) => {
+    IContactAPI.prototype.updateContact = function (id, contact) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
             try {
-                const uri = `${this.getBaseURI()}/contacts/${id}`;
-                const options = {
+                var uri = _this.getBaseURI() + "/contacts/" + id;
+                var options = {
                     body: contact,
-                    headers: this.getHeaders(),
+                    headers: _this.getHeaders(),
                     json: true,
                     method: 'POST',
-                    timeout: this.timeout,
+                    timeout: _this.timeout,
                 };
-                request_1.default(uri, options, (err, response, body) => {
+                request_1.default(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
                     }
                     if (response.statusCode !== HTTPStatus.OK) {
-                        reject(new Error(`Got status code ${response.statusCode} (expecting 200)\n\n${JSON.stringify(body)}`));
+                        reject(new Error("Got status code " + response.statusCode + " (expecting 200)\n\n" + JSON.stringify(body)));
                         return;
                     }
                     if (typeof body.contact !== 'undefined' && typeof body.contact.contactId === 'string') {
@@ -147,30 +154,31 @@ class IContactAPI {
                 reject(err);
             }
         });
-    }
+    };
     /** completely replaces a contact, must include email */
-    replaceContact(id, contact) {
-        return new Promise((resolve, reject) => {
+    IContactAPI.prototype.replaceContact = function (id, contact) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
             if (typeof contact.email === 'undefined') {
                 reject(new Error('`listId` is a required field for all creation requests'));
                 return;
             }
             try {
-                const uri = `${this.getBaseURI()}/contacts/${id}`;
-                const options = {
+                var uri = _this.getBaseURI() + "/contacts/" + id;
+                var options = {
                     body: contact,
-                    headers: this.getHeaders(),
+                    headers: _this.getHeaders(),
                     json: true,
                     method: 'PUT',
-                    timeout: this.timeout,
+                    timeout: _this.timeout,
                 };
-                request_1.default(uri, options, (err, response, body) => {
+                request_1.default(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
                     }
                     if (response.statusCode !== HTTPStatus.OK) {
-                        reject(new Error(`Got status code ${response.statusCode} (expecting 200)\n\n${JSON.stringify(body)}`));
+                        reject(new Error("Got status code " + response.statusCode + " (expecting 200)\n\n" + JSON.stringify(body)));
                         return;
                     }
                     if (typeof body.contact !== 'undefined' && typeof body.contact.contactId === 'string') {
@@ -183,25 +191,26 @@ class IContactAPI {
                 reject(err);
             }
         });
-    }
+    };
     /** completely replaces a contact, must include email */
-    deleteContact(id) {
-        return new Promise((resolve, reject) => {
+    IContactAPI.prototype.deleteContact = function (id) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
             try {
-                const uri = `${this.getBaseURI()}/contacts/${id}`;
-                const options = {
-                    headers: this.getHeaders(),
+                var uri = _this.getBaseURI() + "/contacts/" + id;
+                var options = {
+                    headers: _this.getHeaders(),
                     json: true,
                     method: 'DELETE',
-                    timeout: this.timeout,
+                    timeout: _this.timeout,
                 };
-                request_1.default(uri, options, (err, response, body) => {
+                request_1.default(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
                     }
                     if (response.statusCode !== HTTPStatus.OK) {
-                        reject(new Error(`Got status code ${response.statusCode} (expecting 200)\n\n${JSON.stringify(body)}`));
+                        reject(new Error("Got status code " + response.statusCode + " (expecting 200)\n\n" + JSON.stringify(body)));
                         return;
                     }
                     resolve(body);
@@ -211,29 +220,31 @@ class IContactAPI {
                 reject(err);
             }
         });
-    }
-    getLists(searchParameters) {
-        return new Promise((resolve, reject) => {
+    };
+    IContactAPI.prototype.getLists = function (searchParameters) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
             try {
-                const uri = `${this.getBaseURI()}/lists`;
-                const options = {
-                    headers: this.getHeaders(),
+                var uri = _this.getBaseURI() + "/lists";
+                var options = {
+                    headers: _this.getHeaders(),
                     json: true,
                     method: 'GET',
                     qs: searchParameters,
-                    timeout: this.timeout,
+                    timeout: _this.timeout,
                 };
-                request_1.default(uri, options, (err, response, body) => {
+                request_1.default(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
                     }
                     if (response.statusCode !== HTTPStatus.OK) {
-                        reject(new Error(`Got status code ${response.statusCode} (expecting 200)\n\n${JSON.stringify(body)}`));
+                        reject(new Error("Got status code " + response.statusCode + " (expecting 200)\n\n" + JSON.stringify(body)));
                         return;
                     }
                     if (typeof body.lists !== 'undefined' && Array.isArray(body.lists)) {
-                        for (const l of body.lists) {
+                        for (var _i = 0, _a = body.lists; _i < _a.length; _i++) {
+                            var l = _a[_i];
                             if (typeof l.listId === 'string') {
                                 l.listId = parseInt(l.listId, 10);
                             }
@@ -263,10 +274,12 @@ class IContactAPI {
                 reject(err);
             }
         });
-    }
-    createLists(lists) {
-        return new Promise((resolve, reject) => {
-            for (const list of lists) {
+    };
+    IContactAPI.prototype.createLists = function (lists) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            for (var _i = 0, lists_1 = lists; _i < lists_1.length; _i++) {
+                var list = lists_1[_i];
                 if (typeof list.name === 'undefined') {
                     reject(new Error('`name` is a required field for all creation requests'));
                     return;
@@ -277,25 +290,26 @@ class IContactAPI {
                 }
             }
             try {
-                const uri = `${this.getBaseURI()}/lists`;
-                const options = {
+                var uri = _this.getBaseURI() + "/lists";
+                var options = {
                     body: lists,
-                    headers: this.getHeaders(),
+                    headers: _this.getHeaders(),
                     json: true,
                     method: 'POST',
-                    timeout: this.timeout,
+                    timeout: _this.timeout,
                 };
-                request_1.default(uri, options, (err, response, body) => {
+                request_1.default(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
                     }
                     if (response.statusCode !== HTTPStatus.OK) {
-                        reject(new Error(`Got status code ${response.statusCode} (expecting 200)\n\n${JSON.stringify(body)}`));
+                        reject(new Error("Got status code " + response.statusCode + " (expecting 200)\n\n" + JSON.stringify(body)));
                         return;
                     }
                     if (typeof body.lists !== 'undefined' && Array.isArray(body.lists)) {
-                        for (const l of body.lists) {
+                        for (var _i = 0, _a = body.lists; _i < _a.length; _i++) {
+                            var l = _a[_i];
                             if (typeof l.listId === 'string') {
                                 l.listId = parseInt(l.listId, 10);
                             }
@@ -325,36 +339,38 @@ class IContactAPI {
                 reject(err);
             }
         });
-    }
-    subscribeContactToList(contactId, listId, status) {
+    };
+    IContactAPI.prototype.subscribeContactToList = function (contactId, listId, status) {
+        var _this = this;
         if (typeof status === 'undefined') {
             status = 'normal';
         }
-        return new Promise((resolve, reject) => {
+        return new Promise(function (resolve, reject) {
             try {
-                const uri = `${this.getBaseURI()}/subscriptions`;
-                const options = {
+                var uri = _this.getBaseURI() + "/subscriptions";
+                var options = {
                     body: [{
-                            contactId,
-                            listId,
-                            status,
+                            contactId: contactId,
+                            listId: listId,
+                            status: status,
                         }],
-                    headers: this.getHeaders(),
+                    headers: _this.getHeaders(),
                     json: true,
                     method: 'POST',
-                    timeout: this.timeout,
+                    timeout: _this.timeout,
                 };
-                request_1.default(uri, options, (err, response, body) => {
+                request_1.default(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
                     }
                     if (response.statusCode !== HTTPStatus.OK) {
-                        reject(new Error(`Got status code ${response.statusCode} (expecting 200)\n\n${JSON.stringify(body)}`));
+                        reject(new Error("Got status code " + response.statusCode + " (expecting 200)\n\n" + JSON.stringify(body)));
                         return;
                     }
                     if (typeof body.subscriptions !== 'undefined' && Array.isArray(body.subscriptions)) {
-                        for (const s of body.subscriptions) {
+                        for (var _i = 0, _a = body.subscriptions; _i < _a.length; _i++) {
+                            var s = _a[_i];
                             if (typeof s.contactId === 'string') {
                                 s.contactId = parseInt(s.contactId, 10);
                             }
@@ -370,17 +386,17 @@ class IContactAPI {
                 reject(err);
             }
         });
-    }
-    getBaseURI() {
+    };
+    IContactAPI.prototype.getBaseURI = function () {
         if (this.accountId === null) {
             throw new Error('accountId not supplied. use iContact.setAccountId() first.');
         }
         if (this.clientFolderId === null) {
             throw new Error('accountId not supplied. use iContact.setAccountId() first.');
         }
-        return `${this.host}/icp/a/${this.accountId}/c/${this.clientFolderId}`;
-    }
-    getHeaders() {
+        return this.host + "/icp/a/" + this.accountId + "/c/" + this.clientFolderId;
+    };
+    IContactAPI.prototype.getHeaders = function () {
         return {
             'Accept': 'application/json',
             'Api-AppId': this.appId,
@@ -389,6 +405,7 @@ class IContactAPI {
             'Api-Version': '2.3',
             'Except': '',
         };
-    }
-}
+    };
+    return IContactAPI;
+}());
 exports.default = IContactAPI;
