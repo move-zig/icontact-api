@@ -37,14 +37,14 @@ iContactAPI.setClientFolderId(9999);
 
 ```
 // search by contactId
-iContactAPI.getContacts({ contactId: 23 }).then((results => {
+iContactAPI.getContacts({ contactId: 23 }).then((results) => {
   console.log(results);
 }).catch((err) => {
   console.log(err);
 });
 
 // search by state and firstName with pattern matching
-iContactAPI.getContacts({ state: 'MD', firstName: 'John*' }).then((results => {
+iContactAPI.getContacts({ state: 'MD', firstName: 'John*' }).then((results) => {
   console.log(results);
 }).catch((err) => {
   console.log(err);
