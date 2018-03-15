@@ -7,6 +7,10 @@
   "scripts": {
     "test": "mocha dist/**/*.spec.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/move-zig/icontact-api.git"
+  },
   "author": "Dave Welsh",
   "license": "ISC",
   "devDependencies": {
