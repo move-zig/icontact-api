@@ -67,6 +67,7 @@ describe('getContacts', function () {
         iContactAPI.getContacts({ email: 'dave*' }).then(function (result) {
             chai_1.expect(result).to.be.an('object').with.property('contacts');
             chai_1.expect(result.contacts).to.be.an('array');
+            chai_1.expect(result).to.have.property('total').that.is.a('number');
             done();
         }).catch(done);
     });
@@ -134,7 +135,37 @@ describe('addContacts', function () {
             chai_1.expect(result.contacts[1]).to.have.property('email').that.equals(email2);
             chai_1.expect(result.contacts[1]).to.have.property('firstName').that.equals(firstName2);
             chai_1.expect(result.contacts[1]).to.have.property('country').that.equals(country2);
-            chai_1.expect(result).to.have.property('total').that.equals(2);
+            done();
+        }).catch(done);
+    });
+    it('should add a single contact with a subscription', function (done) {
+        var email = randomEmail();
+        var firstName = randomStr();
+        var contacts = [
+            {
+                email: email,
+                firstName: firstName,
+                subscriptions: [
+                    {
+                        email: email,
+                        listId: 5,
+                        status: 'normal',
+                    },
+                ],
+            },
+        ];
+        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        iContactAPI.setAccountId(accountId);
+        iContactAPI.setClientFolderId(clientFolderId);
+        iContactAPI.addContacts(contacts).then(function (result) {
+            chai_1.expect(result).to.be.an('object');
+            chai_1.expect(result).to.have.property('contacts');
+            chai_1.expect(result.contacts).to.be.an('array').of.length(1);
+            chai_1.expect(result.contacts[0]).to.have.property('contactId');
+            chai_1.expect(result.contacts[0]).to.have.property('email').that.equals(email);
+            chai_1.expect(result.contacts[0]).to.have.property('firstName').that.equals(firstName);
+            chai_1.expect(result.contacts[0]).to.have.property('subscriptions');
+            chai_1.expect(result.contacts[0].subscriptions).to.be.an('array');
             done();
         }).catch(done);
     });

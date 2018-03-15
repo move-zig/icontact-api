@@ -74,6 +74,7 @@ describe('getContacts', () => {
     iContactAPI.getContacts({ email: 'dave*' }).then((result) => {
       expect(result).to.be.an('object').with.property('contacts');
       expect(result.contacts).to.be.an('array');
+      expect(result).to.have.property('total').that.is.a('number');
       done();
     }).catch(done);
   });
@@ -149,7 +150,39 @@ describe('addContacts', () => {
       expect(result.contacts[1]).to.have.property('email').that.equals(email2);
       expect(result.contacts[1]).to.have.property('firstName').that.equals(firstName2);
       expect(result.contacts[1]).to.have.property('country').that.equals(country2);
-      expect(result).to.have.property('total').that.equals(2);
+      done();
+    }).catch(done);
+  });
+
+  it('should add a single contact with a subscription', (done) => {
+    const email = randomEmail();
+    const firstName = randomStr();
+    const contacts: IContact[] = [
+      {
+        email,
+        firstName,
+        subscriptions: [
+          {
+            email,
+            listId: 5,
+            status: 'normal',
+          },
+        ],
+      },
+    ];
+
+    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    iContactAPI.setAccountId(accountId);
+    iContactAPI.setClientFolderId(clientFolderId);
+    iContactAPI.addContacts(contacts).then((result) => {
+      expect(result).to.be.an('object');
+      expect(result).to.have.property('contacts');
+      expect(result.contacts).to.be.an('array').of.length(1);
+      expect(result.contacts[0]).to.have.property('contactId');
+      expect(result.contacts[0]).to.have.property('email').that.equals(email);
+      expect(result.contacts[0]).to.have.property('firstName').that.equals(firstName);
+      expect(result.contacts[0]).to.have.property('subscriptions');
+      expect(result.contacts[0].subscriptions).to.be.an('array');
       done();
     }).catch(done);
   });

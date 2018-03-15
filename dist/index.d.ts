@@ -55,6 +55,12 @@ export interface IContact {
     createDate?: string;
     /** custom fields -- can't be used for searching */
     [key: string]: any;
+    subscriptions?: ISubscription[];
+}
+export interface ISubscription {
+    email: string;
+    listId: number;
+    status: IListStatus;
 }
 /** a contact as returned by iContact */
 export interface IContactResult {
@@ -75,6 +81,7 @@ export interface IContactResult {
     status: IContactStatus;
     bounceCount: number;
     createDate: string;
+    subscribeContactToList: any;
 }
 export interface IContactSearchResult {
     contacts: IContactResult[];

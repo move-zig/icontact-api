@@ -377,6 +377,9 @@ var IContactAPI = /** @class */ (function () {
                             if (typeof s.listId === 'string') {
                                 s.listId = parseInt(s.listId, 10);
                             }
+                            if (typeof s.confirmationMessageId === 'string') {
+                                s.confirmationMessageId = parseInt(s.confirmationMessageId, 10);
+                            }
                         }
                     }
                     resolve(body);
