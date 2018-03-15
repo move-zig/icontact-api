@@ -1,4 +1,4 @@
-#iContact API#
+# iContact API
 
 icontact-api provides a pomisified interface with iContact Pro's REST API.
 
@@ -8,11 +8,11 @@ To install icontact-api, use npm:
 $ npm install icontact-api
 ```
 
-##Examples##
+## Examples
 
-###Instantiating an IContactAPI Object###
+### Instantiating an IContactAPI Object
 
-####TypeScript####
+#### TypeScript
 ```
 import IContactAPI from 'icontact-api';
 import { IContact } from 'icontact-api';
@@ -22,7 +22,7 @@ iContactAPI.setAccountId(9999999);
 iContactAPI.setClientFolderId(9999);
 ```
 
-####JavaScript####
+#### JavaScript
 ```
 var IContactAPI = require('icontact-api').default;
 
@@ -31,9 +31,9 @@ iContactAPI.setAccountId(9999999);
 iContactAPI.setClientFolderId(9999);
 ```
 
-###Searching for a Contact###
+### Searching for a Contact
 
-####TypeScript####
+#### TypeScript
 
 ```
 // search by contactId
@@ -51,7 +51,7 @@ iContactAPI.getContacts({ state: 'MD', firstName: 'John*' }).then((results => {
 });
 ```
 
-####JavaScript####
+#### JavaScript
 
 ```
 // search by contactId
@@ -69,9 +69,9 @@ iContactAPI.getContacts({ state: 'MD', firstName: 'John*' }).then(function (resu
 });
 ```
 
-###Add or Update a Contact and Subscribe It to a List###
+### Add or Update a Contact and Subscribe It to a List
 
-####TypeScript####
+#### TypeScript
 ```
 const listId = 5;
 const contact: IContact = {
@@ -94,7 +94,7 @@ iContactAPI.getContacts({ email: contact.email }).then((results) => {
 });
 ```
 
-####JavaScript####
+#### JavaScript
 ```
 var listId = 5;
 var contact = {
@@ -117,7 +117,7 @@ iContactAPI.getContacts({ email: contact.email }).then(function (results) {
 });
 ```
 
-##Testing##
+## Testing
 
 Tests were written with [mocha](https://www.npmjs.com/package/mocha) and [chai](https://www.npmjs.com/package/chai).
 
