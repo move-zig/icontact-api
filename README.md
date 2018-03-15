@@ -121,4 +121,10 @@ iContactAPI.getContacts({ email: contact.email }).then(function (results) {
 
 Tests were written with [mocha](https://www.npmjs.com/package/mocha) and [chai](https://www.npmjs.com/package/chai).
 
-Run them with `npm test`.
+Run them with
+
+```
+$ npm test
+```
+
+Testing will require an iContact Pro account. Provide the credentials in an `.env` file, following the example in `.env.example`.
