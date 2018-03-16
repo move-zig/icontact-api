@@ -125,6 +125,7 @@ var contact = {
     },
   ],
 };
+
 iContactAPI.getContacts({ email: contact.email }).then(function (results) {
   if (results.total === 0) {
     return iContactAPI.addContacts([contact]);
