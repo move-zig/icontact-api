@@ -14,19 +14,19 @@
   "author": "Dave Welsh",
   "license": "ISC",
   "devDependencies": {
-    "@types/chai": "^4.1.2",
-    "@types/dotenv": "^4.0.2",
+    "@types/chai": "^4.1.4",
+    "@types/dotenv": "^4.0.3",
     "@types/mocha": "^2.2.48",
     "chai": "^4.1.2",
     "dotenv": "^5.0.1",
-    "mocha": "^5.0.4",
-    "tslint": "^5.9.1",
-    "typescript": "^2.7.2"
+    "mocha": "^5.2.0",
+    "tslint": "^5.10.0",
+    "typescript": "^2.9.2"
   },
   "dependencies": {
     "@types/http-status": "^0.2.30",
-    "@types/request": "^2.47.0",
-    "http-status": "^1.0.1",
-    "request": "^2.85.0"
+    "@types/request": "^2.47.1",
+    "http-status": "^1.2.0",
+    "request": "^2.87.0"
   }
 }
