@@ -5,17 +5,21 @@ var __importStar = (this && this.__importStar) || function (mod) {
     if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
     result["default"] = mod;
     return result;
-}
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
-}
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var HTTPStatus = __importStar(require("http-status"));
+var https = __importStar(require("https"));
 var request_1 = __importDefault(require("request"));
 var IContactAPI = /** @class */ (function () {
     function IContactAPI(appId, apiUsername, apiPassword) {
         this.host = 'https://api.icpro.co';
         this.timeout = 5000;
+        this.maxSockets = 40;
+        this.agent = new https.Agent({ maxSockets: this.maxSockets, keepAlive: true, keepAliveMsecs: 8000 });
+        this.baseRequest = request_1.default.defaults({ agent: this.agent });
         this.accountId = null;
         this.clientFolderId = null;
         this.appId = appId;
@@ -40,7 +44,7 @@ var IContactAPI = /** @class */ (function () {
                     qs: searchParameters,
                     timeout: _this.timeout,
                 };
-                request_1.default(uri, options, function (err, response, body) {
+                _this.baseRequest(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
@@ -97,12 +101,12 @@ var IContactAPI = /** @class */ (function () {
                     method: 'POST',
                     timeout: _this.timeout,
                 };
-                request_1.default(uri, options, function (err, response, body) {
+                _this.baseRequest(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
                     }
-                    if (response.statusCode !== HTTPStatus.OK) {
+                    if (response.statusCode !== HTTPStatus.OK) { // note: not 201 CREATED
                         reject(new Error("Got status code " + response.statusCode + " (expecting 200)\n\n" + JSON.stringify(body)));
                         return;
                     }
@@ -135,7 +139,7 @@ var IContactAPI = /** @class */ (function () {
                     method: 'POST',
                     timeout: _this.timeout,
                 };
-                request_1.default(uri, options, function (err, response, body) {
+                _this.baseRequest(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
@@ -172,7 +176,7 @@ var IContactAPI = /** @class */ (function () {
                     method: 'PUT',
                     timeout: _this.timeout,
                 };
-                request_1.default(uri, options, function (err, response, body) {
+                _this.baseRequest(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
@@ -204,7 +208,7 @@ var IContactAPI = /** @class */ (function () {
                     method: 'DELETE',
                     timeout: _this.timeout,
                 };
-                request_1.default(uri, options, function (err, response, body) {
+                _this.baseRequest(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
@@ -233,7 +237,7 @@ var IContactAPI = /** @class */ (function () {
                     qs: searchParameters,
                     timeout: _this.timeout,
                 };
-                request_1.default(uri, options, function (err, response, body) {
+                _this.baseRequest(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
@@ -298,7 +302,7 @@ var IContactAPI = /** @class */ (function () {
                     method: 'POST',
                     timeout: _this.timeout,
                 };
-                request_1.default(uri, options, function (err, response, body) {
+                _this.baseRequest(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;
@@ -359,7 +363,7 @@ var IContactAPI = /** @class */ (function () {
                     method: 'POST',
                     timeout: _this.timeout,
                 };
-                request_1.default(uri, options, function (err, response, body) {
+                _this.baseRequest(uri, options, function (err, response, body) {
                     if (err) {
                         reject(err);
                         return;

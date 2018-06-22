@@ -31,6 +31,8 @@ if (typeof process.env.CLIENT_FOLDER_ID === 'undefined') {
 }
 const clientFolderId = parseInt(process.env.CLIENT_FOLDER_ID, 10);
 
+const timeout = 5000;
+
 describe('accountId', () => {
 
   it('should be set and read', (done) => {
@@ -57,9 +59,9 @@ describe('timeout', () => {
 
   it('should be set and read', (done) => {
     const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
-    const timeout = 5000;
-    iContactAPI.setTimeout(timeout);
-    expect(iContactAPI.getTimeout()).to.equal(timeout);
+    const t = 8000;
+    iContactAPI.setTimeout(t);
+    expect(iContactAPI.getTimeout()).to.equal(t);
     done();
   });
 
@@ -77,7 +79,27 @@ describe('getContacts', () => {
       expect(result).to.have.property('total').that.is.a('number');
       done();
     }).catch(done);
-  });
+  }).timeout(timeout);
+
+  const numLoops = 60;
+
+  it('should get ' + numLoops + ' contacts', (done) => {
+    const emailAddresses: string[] = [];
+    for (let i = 0; i < numLoops; i++) {
+      emailAddresses.push(randomEmail());
+    }
+    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    iContactAPI.setAccountId(accountId);
+    iContactAPI.setClientFolderId(clientFolderId);
+    Promise.all(emailAddresses.map((email) => iContactAPI.getContacts({ email }))).then((results) => {
+      results.forEach((result) => {
+        expect(result).to.be.an('object').with.property('contacts');
+        expect(result.contacts).to.be.an('array');
+        expect(result).to.have.property('total').that.is.a('number');
+      });
+      done();
+    }).catch(done);
+  }).timeout(timeout * numLoops);
 
 });
 
@@ -86,7 +108,7 @@ describe('addContacts', () => {
   it('should add a single contact', (done) => {
     const email = randomEmail();
     const firstName = randomStr();
-    const contacts = [ { email, firstName } ];
+    const contacts = [{ email, firstName }];
 
     const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
     iContactAPI.setAccountId(accountId);
@@ -100,7 +122,7 @@ describe('addContacts', () => {
       expect(result.contacts[0]).to.have.property('firstName').that.equals(firstName);
       done();
     }).catch(done);
-  });
+  }).timeout(timeout);
 
   it('should add a single contact with custom fields', (done) => {
     const email = randomEmail();
@@ -121,7 +143,7 @@ describe('addContacts', () => {
       expect(result.contacts[0]).to.have.property('country').that.equals(country);
       done();
     }).catch(done);
-  });
+  }).timeout(timeout);
 
   it('should add a multiple contacts with custom fields', (done) => {
     const email1 = randomEmail();
@@ -152,7 +174,7 @@ describe('addContacts', () => {
       expect(result.contacts[1]).to.have.property('country').that.equals(country2);
       done();
     }).catch(done);
-  });
+  }).timeout(timeout);
 
   it('should add a single contact with a subscription', (done) => {
     const email = randomEmail();
@@ -185,7 +207,7 @@ describe('addContacts', () => {
       expect(result.contacts[0].subscriptions).to.be.an('array');
       done();
     }).catch(done);
-  });
+  }).timeout(timeout);
 
 });
 
@@ -197,7 +219,8 @@ describe('updateContact', () => {
   const lastName = randomStr();
 
   let iContactAPI: IContactAPI;
-  before((done) => {
+  before(function (done) {
+    this.timeout(timeout);
     const contact: IContact = { email, firstName, lastName };
 
     iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
@@ -222,7 +245,7 @@ describe('updateContact', () => {
       expect(result.contact).to.have.property('lastName').that.equals(newLastName); // new value
       done();
     }).catch(done);
-  });
+  }).timeout(timeout);
 
 });
 
@@ -234,7 +257,8 @@ describe('replaceContact', () => {
   const lastName = randomStr();
 
   let iContactAPI: IContactAPI;
-  before((done) => {
+  before(function (done) {
+    this.timeout(timeout);
     const contact: IContact = { email, firstName, lastName };
 
     iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
@@ -261,7 +285,7 @@ describe('replaceContact', () => {
       expect(result.contact).to.have.property('lastName').that.equals(newLastName); // new value
       done();
     }).catch(done);
-  });
+  }).timeout(timeout);
 
 });
 
@@ -273,7 +297,8 @@ describe('deleteContact', () => {
   const lastName = randomStr();
 
   let iContactAPI: IContactAPI;
-  before((done) => {
+  before(function (done) {
+    this.timeout(timeout);
     const contact: IContact = { email, firstName, lastName };
 
     iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
@@ -307,7 +332,7 @@ describe('deleteContact', () => {
       // expect(result.total).to.equal(0);
       done();
     }).catch(done);
-  });
+  }).timeout(timeout);
 
 });
 
@@ -326,7 +351,7 @@ describe('getLists', () => {
       }
       done();
     }).catch(done);
-  });
+  }).timeout(timeout);
 
 });
 
@@ -345,7 +370,7 @@ describe('addLists', () => {
       expect(result.lists[0]).to.have.property('name').that.equals(name);
       done();
     }).catch(done);
-  });
+  }).timeout(timeout);
 
 });
 
@@ -357,7 +382,8 @@ describe('subscribeContactToList', () => {
   const firstName = randomStr();
   const lastName = randomStr();
 
-  before((done) => {
+  before(function (done) {
+    this.timeout(timeout);
     const contact = { email, firstName, lastName };
 
     iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
@@ -382,7 +408,7 @@ describe('subscribeContactToList', () => {
       expect(result.subscriptions[0]).to.have.property('listId');
       done();
     }).catch(done);
-  });
+  }).timeout(timeout);
 
 });
 

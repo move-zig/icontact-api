@@ -4,6 +4,9 @@ export default class IContactAPI {
     private apiUsername;
     private apiPassword;
     private timeout;
+    private maxSockets;
+    private agent;
+    private baseRequest;
     private accountId;
     private clientFolderId;
     constructor(appId: string, apiUsername: string, apiPassword: string);
@@ -25,8 +28,8 @@ export default class IContactAPI {
     getLists(searchParameters: IList): Promise<IListSearchResult>;
     createLists(lists: IList[]): Promise<any>;
     subscribeContactToList(contactId: number, listId: number, status?: IListStatus): Promise<any>;
-    private getBaseURI();
-    private getHeaders();
+    private getBaseURI;
+    private getHeaders;
 }
 export declare type IContactStatus = 'normal' | 'bounced' | 'donotcontact' | 'pending' | 'invitable' | 'deleted';
 /** a contact to send to iContact */

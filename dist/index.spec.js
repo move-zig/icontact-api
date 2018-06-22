@@ -5,10 +5,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
     result["default"] = mod;
     return result;
-}
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
-}
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var chai_1 = require("chai");
 var dotenv = __importStar(require("dotenv"));
@@ -34,6 +34,7 @@ if (typeof process.env.CLIENT_FOLDER_ID === 'undefined') {
     throw new Error('CLIENT_FOLDER_ID not specified in .env file');
 }
 var clientFolderId = parseInt(process.env.CLIENT_FOLDER_ID, 10);
+var timeout = 5000;
 describe('accountId', function () {
     it('should be set and read', function (done) {
         var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
@@ -53,9 +54,9 @@ describe('clientFolderId', function () {
 describe('timeout', function () {
     it('should be set and read', function (done) {
         var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
-        var timeout = 5000;
-        iContactAPI.setTimeout(timeout);
-        chai_1.expect(iContactAPI.getTimeout()).to.equal(timeout);
+        var t = 8000;
+        iContactAPI.setTimeout(t);
+        chai_1.expect(iContactAPI.getTimeout()).to.equal(t);
         done();
     });
 });
@@ -70,7 +71,25 @@ describe('getContacts', function () {
             chai_1.expect(result).to.have.property('total').that.is.a('number');
             done();
         }).catch(done);
-    });
+    }).timeout(timeout);
+    var numLoops = 60;
+    it('should get ' + numLoops + ' contacts', function (done) {
+        var emailAddresses = [];
+        for (var i = 0; i < numLoops; i++) {
+            emailAddresses.push(randomEmail());
+        }
+        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        iContactAPI.setAccountId(accountId);
+        iContactAPI.setClientFolderId(clientFolderId);
+        Promise.all(emailAddresses.map(function (email) { return iContactAPI.getContacts({ email: email }); })).then(function (results) {
+            results.forEach(function (result) {
+                chai_1.expect(result).to.be.an('object').with.property('contacts');
+                chai_1.expect(result.contacts).to.be.an('array');
+                chai_1.expect(result).to.have.property('total').that.is.a('number');
+            });
+            done();
+        }).catch(done);
+    }).timeout(timeout * numLoops);
 });
 describe('addContacts', function () {
     it('should add a single contact', function (done) {
@@ -89,7 +108,7 @@ describe('addContacts', function () {
             chai_1.expect(result.contacts[0]).to.have.property('firstName').that.equals(firstName);
             done();
         }).catch(done);
-    });
+    }).timeout(timeout);
     it('should add a single contact with custom fields', function (done) {
         var email = randomEmail();
         var firstName = randomStr();
@@ -108,7 +127,7 @@ describe('addContacts', function () {
             chai_1.expect(result.contacts[0]).to.have.property('country').that.equals(country);
             done();
         }).catch(done);
-    });
+    }).timeout(timeout);
     it('should add a multiple contacts with custom fields', function (done) {
         var email1 = randomEmail();
         var email2 = randomEmail();
@@ -137,7 +156,7 @@ describe('addContacts', function () {
             chai_1.expect(result.contacts[1]).to.have.property('country').that.equals(country2);
             done();
         }).catch(done);
-    });
+    }).timeout(timeout);
     it('should add a single contact with a subscription', function (done) {
         var email = randomEmail();
         var firstName = randomStr();
@@ -168,7 +187,7 @@ describe('addContacts', function () {
             chai_1.expect(result.contacts[0].subscriptions).to.be.an('array');
             done();
         }).catch(done);
-    });
+    }).timeout(timeout);
 });
 describe('updateContact', function () {
     var contactId;
@@ -177,6 +196,7 @@ describe('updateContact', function () {
     var lastName = randomStr();
     var iContactAPI;
     before(function (done) {
+        this.timeout(timeout);
         var contact = { email: email, firstName: firstName, lastName: lastName };
         iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
         iContactAPI.setAccountId(accountId);
@@ -199,7 +219,7 @@ describe('updateContact', function () {
             chai_1.expect(result.contact).to.have.property('lastName').that.equals(newLastName); // new value
             done();
         }).catch(done);
-    });
+    }).timeout(timeout);
 });
 describe('replaceContact', function () {
     var contactId;
@@ -208,6 +228,7 @@ describe('replaceContact', function () {
     var lastName = randomStr();
     var iContactAPI;
     before(function (done) {
+        this.timeout(timeout);
         var contact = { email: email, firstName: firstName, lastName: lastName };
         iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
         iContactAPI.setAccountId(accountId);
@@ -232,7 +253,7 @@ describe('replaceContact', function () {
             chai_1.expect(result.contact).to.have.property('lastName').that.equals(newLastName); // new value
             done();
         }).catch(done);
-    });
+    }).timeout(timeout);
 });
 describe('deleteContact', function () {
     var contactId;
@@ -241,6 +262,7 @@ describe('deleteContact', function () {
     var lastName = randomStr();
     var iContactAPI;
     before(function (done) {
+        this.timeout(timeout);
         var contact = { email: email, firstName: firstName, lastName: lastName };
         iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
         iContactAPI.setAccountId(accountId);
@@ -272,7 +294,7 @@ describe('deleteContact', function () {
             // expect(result.total).to.equal(0);
             done();
         }).catch(done);
-    });
+    }).timeout(timeout);
 });
 describe('getLists', function () {
     it('should get some lists', function (done) {
@@ -288,7 +310,7 @@ describe('getLists', function () {
             }
             done();
         }).catch(done);
-    });
+    }).timeout(timeout);
 });
 describe('addLists', function () {
     it('should create a list', function (done) {
@@ -304,7 +326,7 @@ describe('addLists', function () {
             chai_1.expect(result.lists[0]).to.have.property('name').that.equals(name);
             done();
         }).catch(done);
-    });
+    }).timeout(timeout);
 });
 describe('subscribeContactToList', function () {
     var iContactAPI;
@@ -313,6 +335,7 @@ describe('subscribeContactToList', function () {
     var firstName = randomStr();
     var lastName = randomStr();
     before(function (done) {
+        this.timeout(timeout);
         var contact = { email: email, firstName: firstName, lastName: lastName };
         iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
         iContactAPI.setAccountId(accountId);
@@ -334,10 +357,10 @@ describe('subscribeContactToList', function () {
             chai_1.expect(result.subscriptions[0]).to.have.property('listId');
             done();
         }).catch(done);
-    });
+    }).timeout(timeout);
 });
 function randomStr() {
-    return Math.random().toString(36);
+    return Math.random().toString(36).slice(2);
 }
 function randomEmail() {
     return "test+" + randomStr() + "@qccareerschool.com";

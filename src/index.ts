@@ -1,4 +1,5 @@
 import * as HTTPStatus from 'http-status';
+import * as https from 'https';
 import request from 'request';
 
 export default class IContactAPI {
@@ -8,7 +9,11 @@ export default class IContactAPI {
   private appId: string;
   private apiUsername: string;
   private apiPassword: string;
+
   private timeout = 5000;
+  private maxSockets = 40;
+  private agent = new https.Agent({ maxSockets: this.maxSockets, keepAlive: true, keepAliveMsecs: 8000 });
+  private baseRequest = request.defaults({ agent: this.agent });
 
   private accountId: number | null = null;
   private clientFolderId: number | null = null;
@@ -44,7 +49,7 @@ export default class IContactAPI {
           timeout: this.timeout,
         };
 
-        request(uri, options, (err, response, body) => {
+        this.baseRequest(uri, options, (err, response, body) => {
           if (err) {
             reject(err);
             return;
@@ -105,7 +110,7 @@ export default class IContactAPI {
           timeout: this.timeout,
         };
 
-        request(uri, options, (err, response, body) => {
+        this.baseRequest(uri, options, (err, response, body) => {
           if (err) {
             reject(err);
             return;
@@ -149,7 +154,7 @@ export default class IContactAPI {
           timeout: this.timeout,
         };
 
-        request(uri, options, (err, response, body) => {
+        this.baseRequest(uri, options, (err, response, body) => {
           if (err) {
             reject(err);
             return;
@@ -193,7 +198,7 @@ export default class IContactAPI {
           timeout: this.timeout,
         };
 
-        request(uri, options, (err, response, body) => {
+        this.baseRequest(uri, options, (err, response, body) => {
           if (err) {
             reject(err);
             return;
@@ -231,7 +236,7 @@ export default class IContactAPI {
           timeout: this.timeout,
         };
 
-        request(uri, options, (err, response, body) => {
+        this.baseRequest(uri, options, (err, response, body) => {
           if (err) {
             reject(err);
             return;
@@ -266,7 +271,7 @@ export default class IContactAPI {
           timeout: this.timeout,
         };
 
-        request(uri, options, (err, response, body) => {
+        this.baseRequest(uri, options, (err, response, body) => {
           if (err) {
             reject(err);
             return;
@@ -335,7 +340,7 @@ export default class IContactAPI {
           timeout: this.timeout,
         };
 
-        request(uri, options, (err, response, body) => {
+        this.baseRequest(uri, options, (err, response, body) => {
           if (err) {
             reject(err);
             return;
@@ -400,7 +405,7 @@ export default class IContactAPI {
           timeout: this.timeout,
         };
 
-        request(uri, options, (err, response, body) => {
+        this.baseRequest(uri, options, (err, response, body) => {
           if (err) {
             reject(err);
             return;
