@@ -13,7 +13,7 @@ $ npm install icontact-api
 ### Instantiating an IContactAPI Object
 
 #### TypeScript
-```
+```typescript
 import IContactAPI from 'icontact-api';
 import { IContact } from 'icontact-api';
 
@@ -23,7 +23,7 @@ iContactAPI.setClientFolderId(9999);
 ```
 
 #### JavaScript
-```
+```javascript
 var IContactAPI = require('icontact-api').default;
 
 var iContactAPI = new IContactAPI('my app id', 'my username', 'my password');
@@ -35,7 +35,7 @@ iContactAPI.setClientFolderId(9999);
 
 #### TypeScript
 
-```
+```typescript
 // search by contactId
 iContactAPI.getContacts({ contactId: 23 }).then((results) => {
   console.log(results);
@@ -53,7 +53,7 @@ iContactAPI.getContacts({ state: 'MD', firstName: 'John*' }).then((results) => {
 
 #### JavaScript
 
-```
+```javascript
 // search by contactId
 iContactAPI.getContacts({ contactId: 23 }).then(function (results) {
   console.log(results);
@@ -74,7 +74,7 @@ iContactAPI.getContacts({ state: 'MD', firstName: 'John*' }).then(function (resu
 If you issue a contact creation request when a contact already exists (same email address), the old contact will be overwritten and any fields you don't provide will be blank on the resulting contact. To avoid this, see if a contact exists first and then issue either a create contacts request or an update contact request.
 
 #### TypeScript
-```
+```typescript
 const emailAddress = 'john@example.com';
 const firstName = 'John';
 const lastName = 'Doe'
@@ -107,7 +107,7 @@ iContactAPI.getContacts({ email: contact.email }).then((results) => {
 ```
 
 #### JavaScript
-```
+```javascript
 var emailAddress = 'john@example.com';
 var firstName = 'John';
 var lastName = 'Doe'
