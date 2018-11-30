@@ -9,7 +9,7 @@ export default class IContactAPI {
     private baseRequest;
     private accountId;
     private clientFolderId;
-    constructor(appId: string, apiUsername: string, apiPassword: string);
+    constructor(appId: string, apiUsername: string, apiPassword: string, sandbox?: boolean);
     setTimeout(timeout: number): void;
     getTimeout(): number;
     setAccountId(accountId: number): void;

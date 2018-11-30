@@ -14,14 +14,18 @@ var HTTPStatus = __importStar(require("http-status"));
 var https = __importStar(require("https"));
 var request_1 = __importDefault(require("request"));
 var IContactAPI = /** @class */ (function () {
-    function IContactAPI(appId, apiUsername, apiPassword) {
-        this.host = 'https://api.icpro.co';
+    function IContactAPI(appId, apiUsername, apiPassword, sandbox) {
+        if (sandbox === void 0) { sandbox = false; }
+        this.host = 'https://app.icontact.com/';
         this.timeout = 5000;
         this.maxSockets = 40;
         this.agent = new https.Agent({ maxSockets: this.maxSockets, keepAlive: true, keepAliveMsecs: 8000 });
         this.baseRequest = request_1.default.defaults({ agent: this.agent });
         this.accountId = null;
         this.clientFolderId = null;
+        if (sandbox) {
+            this.host = this.host.replace('.', '.sandbox.');
+        }
         this.appId = appId;
         this.apiUsername = apiUsername;
         this.apiPassword = apiPassword;
@@ -406,10 +410,11 @@ var IContactAPI = /** @class */ (function () {
     IContactAPI.prototype.getHeaders = function () {
         return {
             'Accept': 'application/json',
+            'Content-Type': 'application/json',
             'Api-AppId': this.appId,
             'Api-Password': this.apiPassword,
             'Api-Username': this.apiUsername,
-            'Api-Version': '2.3',
+            'Api-Version': '2.2',
             'Except': '',
         };
     };

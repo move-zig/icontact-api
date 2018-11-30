@@ -4,7 +4,7 @@ import request from 'request';
 
 export default class IContactAPI {
 
-  public host = 'https://api.icpro.co';
+  public host = 'https://app.icontact.com/';
 
   private appId: string;
   private apiUsername: string;
@@ -18,7 +18,12 @@ export default class IContactAPI {
   private accountId: number | null = null;
   private clientFolderId: number | null = null;
 
-  constructor(appId: string, apiUsername: string, apiPassword: string) {
+  constructor(appId: string, apiUsername: string, apiPassword: string, sandbox: boolean = false) {
+
+    if(sandbox){
+      this.host = this.host.replace('.', '.sandbox.');
+    }
+
     this.appId = appId;
     this.apiUsername = apiUsername;
     this.apiPassword = apiPassword;
@@ -450,10 +455,11 @@ export default class IContactAPI {
   private getHeaders() {
     return {
       'Accept': 'application/json',
+      'Content-Type': 'application/json',
       'Api-AppId': this.appId,
       'Api-Password': this.apiPassword,
       'Api-Username': this.apiUsername,
-      'Api-Version': '2.3',
+      'Api-Version': '2.2',
       'Except': '',
     };
   }
