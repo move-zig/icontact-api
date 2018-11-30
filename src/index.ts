@@ -20,7 +20,7 @@ export default class IContactAPI {
 
   constructor(appId: string, apiUsername: string, apiPassword: string, sandbox: boolean = false) {
 
-    if(sandbox){
+    if (sandbox) {
       this.host = this.host.replace('.', '.sandbox.');
     }
 
