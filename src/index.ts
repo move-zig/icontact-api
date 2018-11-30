@@ -455,11 +455,11 @@ export default class IContactAPI {
   private getHeaders() {
     return {
       'Accept': 'application/json',
-      'Content-Type': 'application/json',
       'Api-AppId': this.appId,
       'Api-Password': this.apiPassword,
       'Api-Username': this.apiUsername,
       'Api-Version': '2.2',
+      'Content-Type': 'application/json',
       'Except': '',
     };
   }
