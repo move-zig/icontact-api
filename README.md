@@ -1,6 +1,6 @@
 # iContact API
 
-icontact-api provides a pomisified interface for iContact and iContact Pro's REST API.
+icontact-api provides a pomisified interface for iContact and iContact Pro's REST APIs.
 
 To install icontact-api, use npm:
 
