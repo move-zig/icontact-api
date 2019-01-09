@@ -34,10 +34,12 @@ if (typeof process.env.CLIENT_FOLDER_ID === 'undefined') {
     throw new Error('CLIENT_FOLDER_ID not specified in .env file');
 }
 var clientFolderId = parseInt(process.env.CLIENT_FOLDER_ID, 10);
+var pro = process.env.PRO ? true : false;
+var sandbox = process.env.SANDBOX ? true : false;
 var timeout = 5000;
 describe('accountId', function () {
     it('should be set and read', function (done) {
-        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         iContactAPI.setAccountId(accountId);
         chai_1.expect(iContactAPI.getAccountId()).to.equal(accountId);
         done();
@@ -45,7 +47,7 @@ describe('accountId', function () {
 });
 describe('clientFolderId', function () {
     it('should be set and read', function (done) {
-        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         iContactAPI.setClientFolderId(clientFolderId);
         chai_1.expect(iContactAPI.getClientFolderId()).to.equal(clientFolderId);
         done();
@@ -53,7 +55,7 @@ describe('clientFolderId', function () {
 });
 describe('timeout', function () {
     it('should be set and read', function (done) {
-        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         var t = 8000;
         iContactAPI.setTimeout(t);
         chai_1.expect(iContactAPI.getTimeout()).to.equal(t);
@@ -62,7 +64,7 @@ describe('timeout', function () {
 });
 describe('getContacts', function () {
     it('should get some contacts', function (done) {
-        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         iContactAPI.setAccountId(accountId);
         iContactAPI.setClientFolderId(clientFolderId);
         iContactAPI.getContacts({ email: 'dave*' }).then(function (result) {
@@ -78,7 +80,7 @@ describe('getContacts', function () {
         for (var i = 0; i < numLoops; i++) {
             emailAddresses.push(randomEmail());
         }
-        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         iContactAPI.setAccountId(accountId);
         iContactAPI.setClientFolderId(clientFolderId);
         Promise.all(emailAddresses.map(function (email) { return iContactAPI.getContacts({ email: email }); })).then(function (results) {
@@ -96,7 +98,7 @@ describe('addContacts', function () {
         var email = randomEmail();
         var firstName = randomStr();
         var contacts = [{ email: email, firstName: firstName }];
-        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         iContactAPI.setAccountId(accountId);
         iContactAPI.setClientFolderId(clientFolderId);
         iContactAPI.addContacts(contacts).then(function (result) {
@@ -114,7 +116,7 @@ describe('addContacts', function () {
         var firstName = randomStr();
         var country = 'Canada';
         var contact = { email: email, firstName: firstName, country: country };
-        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         iContactAPI.setAccountId(accountId);
         iContactAPI.setClientFolderId(clientFolderId);
         iContactAPI.addContacts([contact]).then(function (result) {
@@ -139,7 +141,7 @@ describe('addContacts', function () {
             { email: email1, firstName: firstName1, country: country1 },
             { email: email2, firstName: firstName2, country: country2 },
         ];
-        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         iContactAPI.setAccountId(accountId);
         iContactAPI.setClientFolderId(clientFolderId);
         iContactAPI.addContacts(contacts).then(function (result) {
@@ -157,37 +159,39 @@ describe('addContacts', function () {
             done();
         }).catch(done);
     }).timeout(timeout);
-    it('should add a single contact with a subscription', function (done) {
-        var email = randomEmail();
-        var firstName = randomStr();
-        var contacts = [
-            {
-                email: email,
-                firstName: firstName,
-                subscriptions: [
-                    {
-                        email: email,
-                        listId: 5,
-                        status: 'normal',
-                    },
-                ],
-            },
-        ];
-        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
-        iContactAPI.setAccountId(accountId);
-        iContactAPI.setClientFolderId(clientFolderId);
-        iContactAPI.addContacts(contacts).then(function (result) {
-            chai_1.expect(result).to.be.an('object');
-            chai_1.expect(result).to.have.property('contacts');
-            chai_1.expect(result.contacts).to.be.an('array').of.length(1);
-            chai_1.expect(result.contacts[0]).to.have.property('contactId');
-            chai_1.expect(result.contacts[0]).to.have.property('email').that.equals(email);
-            chai_1.expect(result.contacts[0]).to.have.property('firstName').that.equals(firstName);
-            chai_1.expect(result.contacts[0]).to.have.property('subscriptions');
-            chai_1.expect(result.contacts[0].subscriptions).to.be.an('array');
-            done();
-        }).catch(done);
-    }).timeout(timeout);
+    if (pro) { // only version 2.3 of the API supports this
+        it('should add a single contact with a subscription', function (done) {
+            var email = randomEmail();
+            var firstName = randomStr();
+            var contacts = [
+                {
+                    email: email,
+                    firstName: firstName,
+                    subscriptions: [
+                        {
+                            email: email,
+                            listId: 5,
+                            status: 'normal',
+                        },
+                    ],
+                },
+            ];
+            var iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
+            iContactAPI.setAccountId(accountId);
+            iContactAPI.setClientFolderId(clientFolderId);
+            iContactAPI.addContacts(contacts).then(function (result) {
+                chai_1.expect(result).to.be.an('object');
+                chai_1.expect(result).to.have.property('contacts');
+                chai_1.expect(result.contacts).to.be.an('array').of.length(1);
+                chai_1.expect(result.contacts[0]).to.have.property('contactId');
+                chai_1.expect(result.contacts[0]).to.have.property('email').that.equals(email);
+                chai_1.expect(result.contacts[0]).to.have.property('firstName').that.equals(firstName);
+                chai_1.expect(result.contacts[0]).to.have.property('subscriptions');
+                chai_1.expect(result.contacts[0].subscriptions).to.be.an('array');
+                done();
+            }).catch(done);
+        }).timeout(timeout);
+    }
 });
 describe('updateContact', function () {
     var contactId;
@@ -198,7 +202,7 @@ describe('updateContact', function () {
     before(function (done) {
         this.timeout(timeout);
         var contact = { email: email, firstName: firstName, lastName: lastName };
-        iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         iContactAPI.setAccountId(accountId);
         iContactAPI.setClientFolderId(clientFolderId);
         iContactAPI.addContacts([contact]).then(function (result) {
@@ -230,7 +234,7 @@ describe('replaceContact', function () {
     before(function (done) {
         this.timeout(timeout);
         var contact = { email: email, firstName: firstName, lastName: lastName };
-        iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         iContactAPI.setAccountId(accountId);
         iContactAPI.setClientFolderId(clientFolderId);
         iContactAPI.addContacts([contact]).then(function (result) {
@@ -264,7 +268,7 @@ describe('deleteContact', function () {
     before(function (done) {
         this.timeout(timeout);
         var contact = { email: email, firstName: firstName, lastName: lastName };
-        iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         iContactAPI.setAccountId(accountId);
         iContactAPI.setClientFolderId(clientFolderId);
         iContactAPI.addContacts([contact]).then(function (result) {
@@ -297,11 +301,26 @@ describe('deleteContact', function () {
     }).timeout(timeout);
 });
 describe('getLists', function () {
-    it('should get some lists', function (done) {
-        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+    it('should get all the lists', function (done) {
+        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         iContactAPI.setAccountId(accountId);
         iContactAPI.setClientFolderId(clientFolderId);
-        iContactAPI.getLists({ welcomeOnSignupAdd: true }).then(function (result) {
+        iContactAPI.getLists().then(function (result) {
+            chai_1.expect(result).to.be.an('object').with.property('lists');
+            chai_1.expect(result.lists).to.be.an('array');
+            if (result.lists.length > 0) {
+                chai_1.expect(result.lists[0]).to.be.an('object').with.property('listId');
+                chai_1.expect(result.lists[0].listId).to.be.a('number');
+            }
+            done();
+        }).catch(done);
+    }).timeout(timeout);
+    it('should get the matching lists', function (done) {
+        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
+        var searchParamters = pro ? { welcomeOnSignupAdd: false } : { welcomeOnSignupAdd: 0 };
+        iContactAPI.setAccountId(accountId);
+        iContactAPI.setClientFolderId(clientFolderId);
+        iContactAPI.getLists(searchParamters).then(function (result) {
             chai_1.expect(result).to.be.an('object').with.property('lists');
             chai_1.expect(result.lists).to.be.an('array');
             if (result.lists.length > 0) {
@@ -316,7 +335,7 @@ describe('addLists', function () {
     it('should create a list', function (done) {
         var name = randomStr();
         var list = { name: name };
-        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        var iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         iContactAPI.setAccountId(accountId);
         iContactAPI.setClientFolderId(clientFolderId);
         iContactAPI.createLists([list]).then(function (result) {
@@ -331,13 +350,16 @@ describe('addLists', function () {
 describe('subscribeContactToList', function () {
     var iContactAPI;
     var contactId;
+    var listId;
     var email = randomEmail();
     var firstName = randomStr();
     var lastName = randomStr();
+    var name = randomStr();
+    var list = { name: name };
     before(function (done) {
         this.timeout(timeout);
         var contact = { email: email, firstName: firstName, lastName: lastName };
-        iContactAPI = new index_1.default(appId, apiUsername, apiPassword);
+        iContactAPI = new index_1.default(appId, apiUsername, apiPassword, pro, sandbox);
         iContactAPI.setAccountId(accountId);
         iContactAPI.setClientFolderId(clientFolderId);
         iContactAPI.addContacts([contact]).then(function (result) {
@@ -345,11 +367,18 @@ describe('subscribeContactToList', function () {
             chai_1.expect(result.contacts).to.be.an('array').of.length(1);
             chai_1.expect(result.contacts[0]).to.have.property('contactId');
             contactId = result.contacts[0].contactId;
+            return iContactAPI.createLists([list]);
+        }).then(function (result) {
+            chai_1.expect(result).to.be.an('object').with.property('lists');
+            chai_1.expect(result.lists).to.be.an('array').of.length(1);
+            chai_1.expect(result.lists[0]).to.have.property('listId').that.is.a('number');
+            chai_1.expect(result.lists[0]).to.have.property('name').that.equals(name);
+            listId = result.lists[0].listId;
             done();
         }).catch(done);
     });
     it('should subcribe a contact to a list', function (done) {
-        iContactAPI.subscribeContactToList(contactId, 5).then(function (result) {
+        iContactAPI.subscribeContactToList(contactId, listId).then(function (result) {
             chai_1.expect(result).to.be.an('object').with.property('subscriptions');
             chai_1.expect(result.subscriptions).to.be.an('array').of.length(1);
             chai_1.expect(result.subscriptions[0]).to.have.property('subscriptionId');
@@ -363,5 +392,5 @@ function randomStr() {
     return Math.random().toString(36).slice(2);
 }
 function randomEmail() {
-    return "test+" + randomStr() + "@qccareerschool.com";
+    return "test+" + randomStr() + "@example.com";
 }

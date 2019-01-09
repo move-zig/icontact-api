@@ -1,15 +1,16 @@
 export default class IContactAPI {
-    host: string;
     private appId;
     private apiUsername;
     private apiPassword;
+    host: string;
     private timeout;
     private maxSockets;
     private agent;
     private baseRequest;
     private accountId;
     private clientFolderId;
-    constructor(appId: string, apiUsername: string, apiPassword: string);
+    private apiVersion;
+    constructor(appId: string, apiUsername: string, apiPassword: string, pro?: boolean, sandbox?: boolean);
     setTimeout(timeout: number): void;
     getTimeout(): number;
     setAccountId(accountId: number): void;
@@ -25,7 +26,7 @@ export default class IContactAPI {
     replaceContact(id: number, contact: IContact): Promise<any>;
     /** completely replaces a contact, must include email */
     deleteContact(id: number): Promise<any>;
-    getLists(searchParameters: IList): Promise<IListSearchResult>;
+    getLists(searchParameters?: IList): Promise<IListSearchResult>;
     createLists(lists: IList[]): Promise<any>;
     subscribeContactToList(contactId: number, listId: number, status?: IListStatus): Promise<any>;
     private getBaseURI;
@@ -100,9 +101,9 @@ export interface IList {
     publicName?: string;
     description?: string;
     welcomeMessageId?: number | null;
-    emailOwnerOnChange?: boolean;
-    welcomeOnManualAdd?: boolean;
-    welcomeOnSignupAdd?: boolean;
+    emailOwnerOnChange?: boolean | number;
+    welcomeOnManualAdd?: boolean | number;
+    welcomeOnSignupAdd?: boolean | number;
 }
 /** a list as returned by iContact  */
 export interface IListResult {

@@ -1,6 +1,6 @@
 # iContact API
 
-icontact-api provides a pomisified interface with iContact Pro's REST API.
+icontact-api provides a pomisified interface for iContact and iContact Pro's REST API.
 
 To install icontact-api, use npm:
 
@@ -14,8 +14,7 @@ $ npm install icontact-api
 
 #### TypeScript
 ```typescript
-import IContactAPI from 'icontact-api';
-import { IContact } from 'icontact-api';
+import IContactAPI, { IContact } from 'icontact-api';
 
 const iContactAPI = new IContactAPI('my app id', 'my username', 'my password');
 iContactAPI.setAccountId(9999999);
@@ -30,6 +29,24 @@ var iContactAPI = new IContactAPI('my app id', 'my username', 'my password');
 iContactAPI.setAccountId(9999999);
 iContactAPI.setClientFolderId(9999);
 ```
+
+### iContact and iContact Pro
+
+By default, the IContactAPI object will attempt to connect to the iContact Pro REST API. To instantiate an object that will connect to regular iContact, pass `false` for the optional fourth constructor parameter:
+
+```javascript
+iContactAPI = new IContactAPI('my app id', 'my username', 'my password', false);
+```
+
+### Sandbox Account
+
+To connect to an iContact Sandbox account, pass `true` for the optional fifth constructor parameter.
+
+```javascript
+iContactAPI = new IContactAPI('my app id', 'my username', 'my password', false, true);
+```
+
+Note that iContact Pro doesn't have a sandbox and the fifth parameter will be ignored.
 
 ### Searching for a Contact
 

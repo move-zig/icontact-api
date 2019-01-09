@@ -1,7 +1,7 @@
 {
   "name": "icontact-api",
-  "version": "0.2.1",
-  "description": "Interface for the iContact Pro REST API",
+  "version": "0.3.0",
+  "description": "Promisified interface for the iContact and iContact Pro REST APIs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

@@ -6,10 +6,6 @@ export default class IContactAPI {
 
   public host = 'https://api.icpro.co';
 
-  private appId: string;
-  private apiUsername: string;
-  private apiPassword: string;
-
   private timeout = 5000;
   private maxSockets = 40;
   private agent = new https.Agent({ maxSockets: this.maxSockets, keepAlive: true, keepAliveMsecs: 8000 });
@@ -18,10 +14,22 @@ export default class IContactAPI {
   private accountId: number | null = null;
   private clientFolderId: number | null = null;
 
-  constructor(appId: string, apiUsername: string, apiPassword: string) {
+  private apiVersion = '2.3';
+
+  constructor(
+    private appId: string,
+    private apiUsername: string,
+    private apiPassword: string,
+    pro: boolean = true,
+    sandbox: boolean = false,
+  ) {
     this.appId = appId;
     this.apiUsername = apiUsername;
     this.apiPassword = apiPassword;
+    if (pro === false) {
+      this.host = sandbox ? 'https://app.sandbox.icontact.com' : 'https://app.icontact.com';
+      this.apiVersion = '2.2';
+    }
   }
 
   public setTimeout(timeout: number) { this.timeout = timeout; }
@@ -255,7 +263,7 @@ export default class IContactAPI {
     });
   }
 
-  public getLists(searchParameters: IList): Promise<IListSearchResult> {
+  public getLists(searchParameters?: IList): Promise<IListSearchResult> {
 
     return new Promise((resolve, reject) => {
 
@@ -453,7 +461,8 @@ export default class IContactAPI {
       'Api-AppId': this.appId,
       'Api-Password': this.apiPassword,
       'Api-Username': this.apiUsername,
-      'Api-Version': '2.3',
+      'Api-Version': this.apiVersion,
+      'Content-Type': 'application/json',
       'Except': '',
     };
   }
@@ -535,9 +544,9 @@ export interface IList {
   publicName?: string;
   description?: string;
   welcomeMessageId?: number | null;
-  emailOwnerOnChange?: boolean;
-  welcomeOnManualAdd?: boolean;
-  welcomeOnSignupAdd?: boolean;
+  emailOwnerOnChange?: boolean | number; // boolean for icp
+  welcomeOnManualAdd?: boolean | number; // boolean for icp
+  welcomeOnSignupAdd?: boolean | number; // boolean for icp
 }
 
 /** a list as returned by iContact  */
