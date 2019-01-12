@@ -163,25 +163,27 @@ iContactAPI.getContacts({ email: contact.email }).then(function (results) {
 * [IContact.setAccountId](#set-account-id)
 * [IContact.getAccountId](#get-account-id)
 
-(#set-timeout)
+### setTimeout
 
 ```typescript
 IContact.setTimeout(timeout: number): void;
 ```
 Sets the request timeout in miliseconds
 
-(#get-timeout)
+### getTimeout
 
 ```typescript
 IContact.getTimeout(): number;
 ```
 Returns the current request timeout in miliseconds
 
+### setAccountId
 ```typescript
 IContact.setAccountId(accountId: number): void;
 ```
 Sets the iContact account ID
 
+### getAccountId
 ```typescript
 IContact.getAccountId(): number | null;
 ```
