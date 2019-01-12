@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import * as dotenv from 'dotenv';
-import * as mocha from 'mocha';
 import IContactAPI from './index';
 import { IContact, IList } from './index';
 
@@ -31,12 +30,15 @@ if (typeof process.env.CLIENT_FOLDER_ID === 'undefined') {
 }
 const clientFolderId = parseInt(process.env.CLIENT_FOLDER_ID, 10);
 
+const pro = process.env.PRO ? true : false;
+const sandbox = process.env.SANDBOX ? true : false;
+
 const timeout = 5000;
 
 describe('accountId', () => {
 
   it('should be set and read', (done) => {
-    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     iContactAPI.setAccountId(accountId);
     expect(iContactAPI.getAccountId()).to.equal(accountId);
     done();
@@ -47,7 +49,7 @@ describe('accountId', () => {
 describe('clientFolderId', () => {
 
   it('should be set and read', (done) => {
-    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     iContactAPI.setClientFolderId(clientFolderId);
     expect(iContactAPI.getClientFolderId()).to.equal(clientFolderId);
     done();
@@ -58,7 +60,7 @@ describe('clientFolderId', () => {
 describe('timeout', () => {
 
   it('should be set and read', (done) => {
-    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     const t = 8000;
     iContactAPI.setTimeout(t);
     expect(iContactAPI.getTimeout()).to.equal(t);
@@ -70,7 +72,7 @@ describe('timeout', () => {
 describe('getContacts', () => {
 
   it('should get some contacts', (done) => {
-    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     iContactAPI.setAccountId(accountId);
     iContactAPI.setClientFolderId(clientFolderId);
     iContactAPI.getContacts({ email: 'dave*' }).then((result) => {
@@ -88,7 +90,7 @@ describe('getContacts', () => {
     for (let i = 0; i < numLoops; i++) {
       emailAddresses.push(randomEmail());
     }
-    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     iContactAPI.setAccountId(accountId);
     iContactAPI.setClientFolderId(clientFolderId);
     Promise.all(emailAddresses.map((email) => iContactAPI.getContacts({ email }))).then((results) => {
@@ -110,7 +112,7 @@ describe('addContacts', () => {
     const firstName = randomStr();
     const contacts = [{ email, firstName }];
 
-    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     iContactAPI.setAccountId(accountId);
     iContactAPI.setClientFolderId(clientFolderId);
     iContactAPI.addContacts(contacts).then((result) => {
@@ -130,7 +132,7 @@ describe('addContacts', () => {
     const country = 'Canada';
     const contact: IContact = { email, firstName, country };
 
-    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     iContactAPI.setAccountId(accountId);
     iContactAPI.setClientFolderId(clientFolderId);
     iContactAPI.addContacts([contact]).then((result) => {
@@ -157,7 +159,7 @@ describe('addContacts', () => {
       { email: email2, firstName: firstName2, country: country2 },
     ];
 
-    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     iContactAPI.setAccountId(accountId);
     iContactAPI.setClientFolderId(clientFolderId);
     iContactAPI.addContacts(contacts).then((result) => {
@@ -176,38 +178,41 @@ describe('addContacts', () => {
     }).catch(done);
   }).timeout(timeout);
 
-  it('should add a single contact with a subscription', (done) => {
-    const email = randomEmail();
-    const firstName = randomStr();
-    const contacts: IContact[] = [
-      {
-        email,
-        firstName,
-        subscriptions: [
-          {
-            email,
-            listId: 5,
-            status: 'normal',
-          },
-        ],
-      },
-    ];
+  if (pro) { // only version 2.3 of the API supports this
 
-    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
-    iContactAPI.setAccountId(accountId);
-    iContactAPI.setClientFolderId(clientFolderId);
-    iContactAPI.addContacts(contacts).then((result) => {
-      expect(result).to.be.an('object');
-      expect(result).to.have.property('contacts');
-      expect(result.contacts).to.be.an('array').of.length(1);
-      expect(result.contacts[0]).to.have.property('contactId');
-      expect(result.contacts[0]).to.have.property('email').that.equals(email);
-      expect(result.contacts[0]).to.have.property('firstName').that.equals(firstName);
-      expect(result.contacts[0]).to.have.property('subscriptions');
-      expect(result.contacts[0].subscriptions).to.be.an('array');
-      done();
-    }).catch(done);
-  }).timeout(timeout);
+    it('should add a single contact with a subscription', (done) => {
+      const email = randomEmail();
+      const firstName = randomStr();
+      const contacts: IContact[] = [
+        {
+          email,
+          firstName,
+          subscriptions: [
+            {
+              email,
+              listId: 5,
+              status: 'normal',
+            },
+          ],
+        },
+      ];
+
+      const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
+      iContactAPI.setAccountId(accountId);
+      iContactAPI.setClientFolderId(clientFolderId);
+      iContactAPI.addContacts(contacts).then((result) => {
+        expect(result).to.be.an('object');
+        expect(result).to.have.property('contacts');
+        expect(result.contacts).to.be.an('array').of.length(1);
+        expect(result.contacts[0]).to.have.property('contactId');
+        expect(result.contacts[0]).to.have.property('email').that.equals(email);
+        expect(result.contacts[0]).to.have.property('firstName').that.equals(firstName);
+        expect(result.contacts[0]).to.have.property('subscriptions');
+        expect(result.contacts[0].subscriptions).to.be.an('array');
+        done();
+      }).catch(done);
+    }).timeout(timeout);
+  }
 
 });
 
@@ -223,7 +228,7 @@ describe('updateContact', () => {
     this.timeout(timeout);
     const contact: IContact = { email, firstName, lastName };
 
-    iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     iContactAPI.setAccountId(accountId);
     iContactAPI.setClientFolderId(clientFolderId);
     iContactAPI.addContacts([contact]).then((result) => {
@@ -261,7 +266,7 @@ describe('replaceContact', () => {
     this.timeout(timeout);
     const contact: IContact = { email, firstName, lastName };
 
-    iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     iContactAPI.setAccountId(accountId);
     iContactAPI.setClientFolderId(clientFolderId);
     iContactAPI.addContacts([contact]).then((result) => {
@@ -301,7 +306,7 @@ describe('deleteContact', () => {
     this.timeout(timeout);
     const contact: IContact = { email, firstName, lastName };
 
-    iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     iContactAPI.setAccountId(accountId);
     iContactAPI.setClientFolderId(clientFolderId);
     iContactAPI.addContacts([contact]).then((result) => {
@@ -338,11 +343,11 @@ describe('deleteContact', () => {
 
 describe('getLists', () => {
 
-  it('should get some lists', (done) => {
-    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+  it('should get all the lists', (done) => {
+    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     iContactAPI.setAccountId(accountId);
     iContactAPI.setClientFolderId(clientFolderId);
-    iContactAPI.getLists({ welcomeOnSignupAdd: true }).then((result) => {
+    iContactAPI.getLists().then((result) => {
       expect(result).to.be.an('object').with.property('lists');
       expect(result.lists).to.be.an('array');
       if (result.lists.length > 0) {
@@ -353,6 +358,21 @@ describe('getLists', () => {
     }).catch(done);
   }).timeout(timeout);
 
+  it('should get the matching lists', (done) => {
+    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
+    const searchParamters = pro ? { welcomeOnSignupAdd: false } : { welcomeOnSignupAdd: 0 };
+    iContactAPI.setAccountId(accountId);
+    iContactAPI.setClientFolderId(clientFolderId);
+    iContactAPI.getLists(searchParamters).then((result) => {
+      expect(result).to.be.an('object').with.property('lists');
+      expect(result.lists).to.be.an('array');
+      if (result.lists.length > 0) {
+        expect(result.lists[0]).to.be.an('object').with.property('listId');
+        expect(result.lists[0].listId).to.be.a('number');
+      }
+      done();
+    }).catch(done);
+  }).timeout(timeout);
 });
 
 describe('addLists', () => {
@@ -360,7 +380,7 @@ describe('addLists', () => {
   it('should create a list', (done) => {
     const name = randomStr();
     const list: IList = { name };
-    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    const iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     iContactAPI.setAccountId(accountId);
     iContactAPI.setClientFolderId(clientFolderId);
     iContactAPI.createLists([list]).then((result) => {
@@ -378,15 +398,18 @@ describe('subscribeContactToList', () => {
 
   let iContactAPI: IContactAPI;
   let contactId: number;
+  let listId: number;
   const email = randomEmail();
   const firstName = randomStr();
   const lastName = randomStr();
+  const name = randomStr();
+  const list: IList = { name };
 
   before(function (done) {
     this.timeout(timeout);
     const contact = { email, firstName, lastName };
 
-    iContactAPI = new IContactAPI(appId, apiUsername, apiPassword);
+    iContactAPI = new IContactAPI(appId, apiUsername, apiPassword, pro, sandbox);
     iContactAPI.setAccountId(accountId);
     iContactAPI.setClientFolderId(clientFolderId);
     iContactAPI.addContacts([contact]).then((result) => {
@@ -394,13 +417,20 @@ describe('subscribeContactToList', () => {
       expect(result.contacts).to.be.an('array').of.length(1);
       expect(result.contacts[0]).to.have.property('contactId');
       contactId = result.contacts[0].contactId;
+      return iContactAPI.createLists([list]);
+    }).then((result) => {
+      expect(result).to.be.an('object').with.property('lists');
+      expect(result.lists).to.be.an('array').of.length(1);
+      expect(result.lists[0]).to.have.property('listId').that.is.a('number');
+      expect(result.lists[0]).to.have.property('name').that.equals(name);
+      listId = result.lists[0].listId;
       done();
     }).catch(done);
 
   });
 
   it('should subcribe a contact to a list', (done) => {
-    iContactAPI.subscribeContactToList(contactId, 5).then((result) => {
+    iContactAPI.subscribeContactToList(contactId, listId).then((result) => {
       expect(result).to.be.an('object').with.property('subscriptions');
       expect(result.subscriptions).to.be.an('array').of.length(1);
       expect(result.subscriptions[0]).to.have.property('subscriptionId');
@@ -417,5 +447,5 @@ function randomStr() {
 }
 
 function randomEmail() {
-  return `test+${randomStr()}@qccareerschool.com`;
+  return `test+${randomStr()}@example.com`;
 }

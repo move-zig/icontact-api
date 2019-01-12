@@ -1,7 +1,7 @@
 {
   "name": "icontact-api",
-  "version": "0.2.1",
-  "description": "Interface for the iContact Pro REST API",
+  "version": "0.3.0",
+  "description": "Promisified interface for the iContact and iContact Pro REST APIs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -14,19 +14,19 @@
   "author": "Dave Welsh",
   "license": "ISC",
   "devDependencies": {
-    "@types/chai": "^4.1.4",
+    "@types/chai": "^4.1.7",
     "@types/dotenv": "^4.0.3",
     "@types/mocha": "^2.2.48",
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "dotenv": "^5.0.1",
     "mocha": "^5.2.0",
-    "tslint": "^5.10.0",
+    "tslint": "^5.12.0",
     "typescript": "^2.9.2"
   },
   "dependencies": {
     "@types/http-status": "^0.2.30",
-    "@types/request": "^2.47.1",
-    "http-status": "^1.2.0",
-    "request": "^2.87.0"
+    "@types/request": "^2.48.1",
+    "http-status": "^1.3.1",
+    "request": "^2.88.0"
   }
 }
