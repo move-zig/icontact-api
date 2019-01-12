@@ -156,6 +156,68 @@ iContactAPI.getContacts({ email: contact.email }).then(function (results) {
 });
 ```
 
+## Reference
+
+```typescript
+IContact.setTimeout(timeout: number): void;
+```
+
+```typescript
+IContact.getTimeout(): number;
+```
+
+```typescript
+IContact.setAccountId(accountId: number): void;
+```
+
+```typescript
+IContact.getAccountId(): number | null;
+```
+
+```typescript
+IContact.setClientFolderId(clientFolderId: number): void;
+```
+
+```typescript
+IContact.getClientFolderId(): number | null;
+```
+
+```typescript
+IContact.getContacts(searchParameters: IContact): Promise<IContactSearchResult>;
+```
+
+```typescript
+IContact.addContacts(contacts: IContact[]): Promise<any>;
+```
+adds new contacts--remember to subscribe them to a list
+
+```typescript
+IContact.updateContact(id: number, contact: IContact): Promise<any>;
+```
+updates a contact, replacing only the fields supplied
+
+```typescript
+IContact.replaceContact(id: number, contact: IContact): Promise<any>;
+```
+completely replaces a contact, must include email
+
+```typescript
+IContact.deleteContact(id: number): Promise<any>;
+```
+completely replaces a contact, must include email
+
+```typescript
+IContact.getLists(searchParameters?: IList): Promise<IListSearchResult>;
+```
+
+```typescript
+IContact.createLists(lists: IList[]): Promise<any>;
+```
+
+```typescript
+IContact.subscribeContactToList(contactId: number, listId: number, status?: IListStatus): Promise<any>;
+```
+
 ## Testing
 
 Tests were written with [mocha](https://www.npmjs.com/package/mocha) and [chai](https://www.npmjs.com/package/chai).
