@@ -90,6 +90,8 @@ iContactAPI.getContacts({ state: 'MD', firstName: 'John*' }).then(function (resu
 
 If you issue a contact creation request when a contact already exists (same email address), the old contact will be overwritten and any fields you don't provide will be blank on the resulting contact. To avoid this, see if a contact exists first and then issue either a create contacts request or an update contact request.
 
+Note: Subscribing a contact to a list at the time of contact creation is a feature of version 2.3 of iContact's REST API. At the time of writing, only iContact Pro supports this version. If connecting to iContact, rather than iContact Pro, create a contact first and then subscribe it to a list using [IContact.subscribeContactToList](#subscribecontacttolist).
+
 #### TypeScript
 ```typescript
 const emailAddress = 'john@example.com';
