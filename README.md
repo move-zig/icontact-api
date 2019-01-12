@@ -279,4 +279,4 @@ Run them with
 $ npm test
 ```
 
-Testing will require an iContact Pro account. Provide the credentials in an `.env` file, following the example in `.env.example`.
+Testing will require an iContact or iContact Pro account. Provide the credentials in an `.env` file, following the example in `.env.example`.
