@@ -158,65 +158,85 @@ iContactAPI.getContacts({ email: contact.email }).then(function (results) {
 
 ## Reference
 
+* [IContact.setTimeout](#set-timeout)
+* [IContact.getTimeout](#get-timeout)
+* [IContact.setAccountId](#set-account-id)
+* [IContact.getAccountId](#get-account-id)
+
+(#set-timeout)
+
 ```typescript
 IContact.setTimeout(timeout: number): void;
 ```
+Sets the request timeout in miliseconds
+
+(#get-timeout)
 
 ```typescript
 IContact.getTimeout(): number;
 ```
+Returns the current request timeout in miliseconds
 
 ```typescript
 IContact.setAccountId(accountId: number): void;
 ```
+Sets the iContact account ID
 
 ```typescript
 IContact.getAccountId(): number | null;
 ```
+Returns the current iContact account ID
 
 ```typescript
 IContact.setClientFolderId(clientFolderId: number): void;
 ```
+Returns the current iContact client folder ID
+
 
 ```typescript
 IContact.getClientFolderId(): number | null;
 ```
+Returns the current iContact client folder ID
 
 ```typescript
 IContact.getContacts(searchParameters: IContact): Promise<IContactSearchResult>;
 ```
+Retrieves the contacts matching the search parameters
 
 ```typescript
 IContact.addContacts(contacts: IContact[]): Promise<any>;
 ```
-adds new contacts--remember to subscribe them to a list
+Adds new contacts--remember to subscribe them to a list
 
 ```typescript
 IContact.updateContact(id: number, contact: IContact): Promise<any>;
 ```
-updates a contact, replacing only the fields supplied
+Updates a contact, replacing only the fields supplied
 
 ```typescript
 IContact.replaceContact(id: number, contact: IContact): Promise<any>;
 ```
-completely replaces a contact, must include email
+Completely replaces a contact--must include email
 
 ```typescript
 IContact.deleteContact(id: number): Promise<any>;
 ```
-completely replaces a contact, must include email
+Deletes a contact
 
 ```typescript
 IContact.getLists(searchParameters?: IList): Promise<IListSearchResult>;
 ```
+Retrieves the lists matching the search parameters
 
 ```typescript
 IContact.createLists(lists: IList[]): Promise<any>;
 ```
+Adds new lists
 
 ```typescript
 IContact.subscribeContactToList(contactId: number, listId: number, status?: IListStatus): Promise<any>;
 ```
+Subscribes a contact to a list
 
 ## Testing
 
