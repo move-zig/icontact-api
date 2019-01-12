@@ -158,10 +158,10 @@ iContactAPI.getContacts({ email: contact.email }).then(function (results) {
 
 ## Reference
 
-* [IContact.setTimeout](#set-timeout)
-* [IContact.getTimeout](#get-timeout)
-* [IContact.setAccountId](#set-account-id)
-* [IContact.getAccountId](#get-account-id)
+* [IContact.setTimeout](#settimeout)
+* [IContact.getTimeout](#gettimeout)
+* [IContact.setAccountId](#setaccountid)
+* [IContact.getAccountId](#getaccountid)
 
 ### setTimeout
 
