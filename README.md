@@ -12,20 +12,10 @@ $ npm install icontact-api
 
 ### Instantiating an IContactAPI Object
 
-#### TypeScript
-```typescript
-import IContactAPI, { IContact } from 'icontact-api';
+```javascript
+import IContactAPI from 'icontact-api';
 
 const iContactAPI = new IContactAPI('my app id', 'my username', 'my password');
-iContactAPI.setAccountId(9999999);
-iContactAPI.setClientFolderId(9999);
-```
-
-#### JavaScript
-```javascript
-var IContactAPI = require('icontact-api').default;
-
-var iContactAPI = new IContactAPI('my app id', 'my username', 'my password');
 iContactAPI.setAccountId(9999999);
 iContactAPI.setClientFolderId(9999);
 ```
@@ -35,7 +25,7 @@ iContactAPI.setClientFolderId(9999);
 By default, the IContactAPI object will attempt to connect to the iContact Pro REST API. To instantiate an object that will connect to regular iContact, pass `false` for the optional fourth constructor parameter:
 
 ```javascript
-iContactAPI = new IContactAPI('my app id', 'my username', 'my password', false);
+const iContactAPI = new IContactAPI('my app id', 'my username', 'my password', false);
 ```
 
 ### Sandbox Account
@@ -43,46 +33,22 @@ iContactAPI = new IContactAPI('my app id', 'my username', 'my password', false);
 To connect to an iContact Sandbox account, pass `true` for the optional fifth constructor parameter.
 
 ```javascript
-iContactAPI = new IContactAPI('my app id', 'my username', 'my password', false, true);
+const iContactAPI = new IContactAPI('my app id', 'my username', 'my password', false, true);
 ```
 
 Note that iContact Pro doesn't have a sandbox and the fifth parameter will be ignored.
 
 ### Searching for a Contact
 
-#### TypeScript
-
-```typescript
+```javascript
 // search by contactId
 iContactAPI.getContacts({ contactId: 23 }).then((results) => {
   console.log(results);
-}).catch((err) => {
-  console.log(err);
 });
 
 // search by state and firstName with pattern matching
 iContactAPI.getContacts({ state: 'MD', firstName: 'John*' }).then((results) => {
   console.log(results);
-}).catch((err) => {
-  console.log(err);
-});
-```
-
-#### JavaScript
-
-```javascript
-// search by contactId
-iContactAPI.getContacts({ contactId: 23 }).then(function (results) {
-  console.log(results);
-}).catch(function (err) {
-  console.log(err);
-});
-
-// search by state and firstName with pattern matching
-iContactAPI.getContacts({ state: 'MD', firstName: 'John*' }).then(function (results) {
-  console.log(results);
-}).catch(function (err) {
-  console.log(err);
 });
 ```
 
@@ -92,21 +58,15 @@ If you issue a contact creation request when a contact already exists (same emai
 
 Note: Subscribing a contact to a list at the time of contact creation is a feature of version 2.3 of iContact's REST API. At the time of writing, only iContact Pro supports this version. If connecting to iContact, rather than iContact Pro, create a contact first and then subscribe it to a list using [IContact.subscribeContactToList](#subscribecontacttolist).
 
-#### TypeScript
-```typescript
-const emailAddress = 'john@example.com';
-const firstName = 'John';
-const lastName = 'Doe'
-const listId = 5;
-
-const contact: IContact = {
-  email: emailAddress,
-  firstName,
-  lastName,
-  subsciptions: [
+```javascript
+const contact = {
+  email: 'john@example.com',
+  firstName: 'John',
+  lastName: 'Doe',
+  subscriptions: [
     {
-      email: emailAddress,
-      listId,
+      email: 'john@example.com',
+      listId: 5,
       status: 'normal'
     },
   ],
@@ -120,41 +80,6 @@ iContactAPI.getContacts({ email: contact.email }).then((results) => {
   }
 }).then((results) => {
   console.log(results);
-}).catch((err) => {
-  console.log(err);
-});
-```
-
-#### JavaScript
-```javascript
-var emailAddress = 'john@example.com';
-var firstName = 'John';
-var lastName = 'Doe'
-var listId = 5;
-
-var contact = {
-  email: emailAddress,
-  firstName: firstName,
-  lastName: lastName,
-  subsciptions: [
-    {
-      email: emailAddress,
-      listId: listId,
-      status: 'normal'
-    },
-  ],
-};
-
-iContactAPI.getContacts({ email: contact.email }).then(function (results) {
-  if (results.total === 0) {
-    return iContactAPI.addContacts([contact]);
-  } else {
-    return iContactAPI.updateContact(results.contacts[0].contactId, contact);
-  }
-}).then(function (results) {
-  console.log(results);
-}).catch(function (err) {
-  console.log(err);
 });
 ```
 
